@@ -2,6 +2,17 @@
 
 Frontend aplikasi web untuk sistem antrian toko. Aplikasi ini dibuat menggunakan **React.js** dan **Tailwind CSS**, serta mendukung real-time update menggunakan **Socket.IO**.
 
+## 🌐 Demo (Sudah Dideploy)
+
+Aplikasi telah dideploy dan dapat diakses di:
+
+🔗 **URL**: [https://pt-acset-frontend-test.vercel.app]
+
+### 🔐 Login Admin
+
+- **Username**: `admin_br001`
+- **Password**: `admin123`
+
 ## 🚀 Fitur
 
 ### 👥 Pelanggan
