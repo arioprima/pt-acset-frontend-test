@@ -8,10 +8,19 @@ Aplikasi telah dideploy dan dapat diakses di:
 
 🔗 **URL**: [https://pt-acset-frontend-test.vercel.app]
 
+**Untuk Setup**
+🔗 **URL**: [https://pt-acset-frontend-test.vercel.app/setup]
+
+**Untuk Setup**
+🔗 **URL**: [https://pt-acset-frontend-test.vercel.app/login]
+
 ### 🔐 Login Admin
 
 - **Username**: `admin_br001`
 - **Password**: `admin123`
+
+**Untuk Admin**
+🔗 **URL**: [https://pt-acset-frontend-test.vercel.app/admin]
 
 ## 🚀 Fitur
 
