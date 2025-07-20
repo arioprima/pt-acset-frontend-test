@@ -8,12 +8,34 @@ import JsBarcode from "jsbarcode";
 export default function CustomerPage() {
     const [latestNumber, setLatestNumber] = useState(0)
     const [loading, setLoading] = useState(false)
-    const [isConnected, setIsConnected] = useState(false)
     const [showSuccess, setShowSuccess] = useState(false)
 
     const branch_id = localStorage.getItem("branch_id")
     const counter_id = localStorage.getItem("counter_id")
     const branchInfo = JSON.parse(localStorage.getItem('branch_info'));
+
+    const [isConnected, setIsConnected] = useState(socket.connected);
+
+    useEffect(() => {
+        function onConnect() {
+            setIsConnected(true);
+        }
+
+        function onDisconnect() {
+            setIsConnected(false);
+        }
+
+        socket.on("connect", onConnect);
+        socket.on("disconnect", onDisconnect);
+
+        console.log('isConnected:', socket.connected);
+
+        return () => {
+            socket.off("connect", onConnect);
+            socket.off("disconnect", onDisconnect);
+        };
+    }, []);
+
 
     useEffect(() => {
         document.title = "Halaman Pelanggan"
