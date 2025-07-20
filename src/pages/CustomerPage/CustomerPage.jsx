@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import jsPDF from "jspdf"
 import { getLatestQueue, createQueue } from "../../services/queueService"
 import socket from '../../socket/socket';
+import JsBarcode from "jsbarcode";
+
 
 export default function CustomerPage() {
     const [latestNumber, setLatestNumber] = useState(0)
@@ -54,58 +56,70 @@ export default function CustomerPage() {
     }, []);
 
     const masukAntrian = async () => {
-        setLoading(true)
+        setLoading(true);
 
         try {
-            const result = await createQueue(branch_id, counter_id)
+            const result = await createQueue(branch_id, counter_id);
             if (result.status === 200) {
-                const number = result.data.number || 0
-                setShowSuccess(true)
-                setTimeout(() => setShowSuccess(false), 3000)
+                const number = result.data.number || 0;
+                const number_formatted = result?.data?.number_formatted || number
+                setShowSuccess(true);
+                setTimeout(() => setShowSuccess(false), 3000);
+
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('id-ID').replace(/\//g, '-');
+                const timeStr = now.toLocaleTimeString('id-ID', { hour12: false }).replace(/\./g, ':').replace(/:/g, '-');
+
+                const canvas = document.getElementById("barcode-canvas");
+                JsBarcode(canvas, `${number}`, {
+                    format: "CODE128",
+                    displayValue: false,
+                    height: 40,
+                    width: 2,
+                    margin: 0,
+                });
+
+                const barcodeImage = canvas.toDataURL("image/png");
 
                 const doc = new jsPDF({
                     orientation: "portrait",
                     unit: "mm",
                     format: [80, 150],
-                })
+                });
 
-                doc.setFontSize(16)
-                doc.setFont(undefined, "bold")
-                doc.text("TIKET ANTRIAN", 40, 15, { align: "center" })
+                doc.setFontSize(16);
+                doc.setFont(undefined, "bold");
+                doc.text("TIKET ANTRIAN", 40, 15, { align: "center" });
 
-                doc.setFontSize(10)
-                doc.setFont(undefined, "normal")
-                doc.text(`${branchInfo.name}`, 40, 25, { align: "center" })
-                doc.text(`${branchInfo.location}`, 40, 30, { align: "center" })
+                doc.setFontSize(10);
+                doc.setFont(undefined, "normal");
+                doc.text(`${branchInfo.name}`, 40, 25, { align: "center" });
+                doc.text(`${branchInfo.location}`, 40, 30, { align: "center" });
 
-                doc.setFontSize(36)
-                doc.setFont(undefined, "bold")
-                doc.text(`${number}`, 40, 50, { align: "center" })
+                doc.setFontSize(20);
+                doc.setFont(undefined, "bold");
+                doc.text(`${number_formatted}`, 40, 50, { align: "center" });
 
-                doc.setFontSize(10)
-                doc.setFont(undefined, "normal")
-                const now = new Date()
-                doc.text(`Tanggal: ${now.toLocaleDateString()}`, 40, 65, { align: "center" })
-                doc.text(`Waktu: ${now.toLocaleTimeString()}`, 40, 70, { align: "center" })
+                doc.setFontSize(10);
+                doc.setFont(undefined, "normal");
+                doc.text(`Tanggal: ${now.toLocaleDateString("id-ID")}`, 40, 65, { align: "center" });
+                doc.text(`Waktu: ${now.toLocaleTimeString("id-ID", { hour12: false })}`, 40, 70, { align: "center" });
+                doc.addImage(barcodeImage, "PNG", 20, 80, 40, 20);
 
-                doc.setFontSize(8)
-                doc.text("Terima kasih atas kunjungan Anda", 40, 100, { align: "center" })
-                doc.text("Tunjukkan tiket ini saat dipanggil", 40, 105, { align: "center" })
-                doc.text("www.antriankita.com", 40, 120, { align: "center" })
+                doc.setFontSize(8);
+                doc.text("Terima kasih atas kunjungan Anda", 40, 105, { align: "center" });
+                doc.text("Tunjukkan tiket ini saat dipanggil", 40, 110, { align: "center" });
 
-                // Simple barcode
-                doc.setFillColor(0, 0, 0)
-                doc.rect(30, 80, 20, 10, "F")
-
-                doc.save(`antrian-${number}.pdf`)
+                doc.save(`tiket-antrian-${number}-${dateStr}_${timeStr}.pdf`);
             }
         } catch (err) {
-            console.error("Gagal masuk antrian", err)
-            alert("Gagal mengambil antrian")
+            console.error("Gagal masuk antrian", err);
+            alert("Gagal mengambil antrian");
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
+
 
 
 
@@ -290,6 +304,7 @@ export default function CustomerPage() {
                     </div>
                 </div>
             </div>
+            <canvas id="barcode-canvas" style={{ display: "none" }}></canvas>
         </div>
     )
 }
