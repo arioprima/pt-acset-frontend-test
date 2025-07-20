@@ -170,7 +170,7 @@ export default function CustomerPage() {
                                     <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
                                         Sistem Antrian Digital
                                     </h1>
-                                    <p className="text-gray-500 text-sm">Layanan antrian modern dan efisien</p>
+
                                 </div>
                             </div>
 
