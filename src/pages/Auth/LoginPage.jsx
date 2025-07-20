@@ -14,6 +14,10 @@ export default function LoginPage() {
 
     useEffect(() => {
         document.title = "Login Admin - Aplikasi Antrian";
+        const token = localStorage.getItem("token");
+        if (token) {
+            navigate("/admin", { replace: true });
+        }
     }, []);
 
     const handleLogin = async (e) => {

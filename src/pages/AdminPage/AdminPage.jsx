@@ -10,11 +10,13 @@ import {
     ChevronLeft,
     ChevronRight,
     Users,
-    Calendar,
+    LogOut
 } from "lucide-react"
 import { getCountersByBranch } from "../../services/counterService"
 import { getQueue, markQueueAsDone } from "../../services/queueService"
 import { getBranches } from "../../services/branchService"
+import { getBranchIdFromToken } from "../../helper/get_branch_id"
+import { useNavigate } from "react-router-dom"
 
 
 export default function AdminPage() {
@@ -28,10 +30,15 @@ export default function AdminPage() {
     const [totalPages, setTotalPages] = useState(1)
     const [totalData, setTotalData] = useState(0)
     const [loading, setLoading] = useState(false)
+    const navigate = useNavigate();
 
 
     useEffect(() => {
         document.title = "Halaman Admin"
+        const branchId = getBranchIdFromToken();
+        if (branchId) {
+            setSelectedBranch(branchId);
+        }
     }, [])
 
     useEffect(() => {
@@ -98,6 +105,11 @@ export default function AdminPage() {
         }
         fetchQueues()
     }, [selectedBranch, selectedCounter, page, statusFilter])
+
+    const handleLogout = () => {
+        localStorage.removeItem("token")
+        navigate('/login')
+    }
 
     const markDone = async (id) => {
         try {
@@ -248,7 +260,17 @@ export default function AdminPage() {
                         <div className="p-2 bg-blue-100 rounded-lg">
                             <Users className="w-6 h-6 text-blue-600" />
                         </div>
-                        <h1 className="text-3xl font-bold text-gray-900">Admin - Daftar Antrian</h1>
+                        <div className="flex justify-between w-full">
+                            <h1 className="text-3xl font-bold text-gray-900">Admin - Daftar Antrian</h1>
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+                            >
+                                <LogOut className="w-5 h-5" />
+                                Keluar
+                            </button>
+                        </div>
+
                     </div>
 
                 </div>
@@ -262,26 +284,11 @@ export default function AdminPage() {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 <Building2 className="w-4 h-4 inline mr-1" />
-                                Pilih Cabang
+                                Cabang
                             </label>
-                            <select
-                                value={selectedBranch}
-                                onChange={(e) => {
-                                    setSelectedBranch(e.target.value)
-                                    setSelectedCounter("")
-                                    setPage(1)
-                                    setQueues([])
-                                }}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                disabled={loading}
-                            >
-                                <option value="">Pilih Cabang</option>
-                                {branches.map((b) => (
-                                    <option key={b._id} value={b._id}>
-                                        {b.name}
-                                    </option>
-                                ))}
-                            </select>
+                            <div className="px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
+                                {branches.find((b) => b._id === selectedBranch)?.name || "Cabang tidak ditemukan"}
+                            </div>
                         </div>
 
                         <div>
