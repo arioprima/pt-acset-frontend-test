@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table"
 import {
