@@ -1,6 +1,6 @@
-import api from "./api";
+import { publicApi } from "./api";
 
 export const getBranches = async () => {
-    const { data } = await api.get("/branches");
+    const { data } = await publicApi.get("/branches");
     return data;
 };
