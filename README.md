@@ -58,6 +58,8 @@ Buat file `.env` di root folder dengan isi:
 
 ```env
 VITE_API_BASE_URL=http://localhost:3000/api
+VITE_SOCKET_URL=http://localhost:3000
+VITE_SOCKET_PATH=/socket.io
 ```
 
 ### 4. Menjalankan Aplikasi
