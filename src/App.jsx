@@ -1,51 +1,40 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import SetupMachinePage from './pages/SetupMachinePage/SetupMachinePage';
 import CustomerPage from './pages/CustomerPage/CustomerPage';
 import AdminPage from './pages/AdminPage/AdminPage';
 import { useEffect, useState } from 'react';
 
-export default function App() {
-  const [isSetupComplete, setIsSetupComplete] = useState(false);
+function AppRoutes() {
+  const navigate = useNavigate();
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    checkSetupStatus();
-  }, []);
-
-  const checkSetupStatus = () => {
     const branchId = localStorage.getItem('branch_id');
     const counterId = localStorage.getItem('counter_id');
-    setIsSetupComplete(!!(branchId && counterId));
-    setIsChecking(false);
-  };
 
-  if (isChecking) {
-    return <div>Loading...</div>;
-  }
+    // Jika belum ada konfigurasi, redirect ke /setup
+    if (!branchId || !counterId) {
+      navigate('/setup');
+    }
+
+    setIsChecking(false);
+  }, [navigate]);
+
+  if (isChecking) return <div>Loading...</div>;
 
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            isSetupComplete
-              ? <CustomerPage />
-              : <Navigate to="/setup" replace />
-          }
-        />
-        <Route
-          path="/setup"
-          element={
-            isSetupComplete
-              ? <Navigate to="/" replace />
-              : <SetupMachinePage onSetupComplete={checkSetupStatus} />
-          }
-        />
+    <Routes>
+      <Route path="/" element={<CustomerPage />} />
+      <Route path="/setup" element={<SetupMachinePage />} />
+      <Route path="/admin" element={<AdminPage />} />
+    </Routes>
+  );
+}
 
-        <Route path="/customer" element={<CustomerPage />} />
-        <Route path="/admin" element={<AdminPage />} />
-      </Routes>
+export default function App() {
+  return (
+    <Router>
+      <AppRoutes />
     </Router>
   );
 }
