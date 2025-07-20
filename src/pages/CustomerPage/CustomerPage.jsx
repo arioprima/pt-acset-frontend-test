@@ -16,6 +16,7 @@ export default function CustomerPage() {
     const branchInfo = JSON.parse(localStorage.getItem('branch_info'));
 
     useEffect(() => {
+        document.title = "Halaman Pelanggan"
         console.log('isConnected:', isConnected)
     }, [isConnected])
 

@@ -29,6 +29,11 @@ export default function AdminPage() {
     const [totalData, setTotalData] = useState(0)
     const [loading, setLoading] = useState(false)
 
+
+    useEffect(() => {
+        document.title = "Halaman Admin"
+    }, [])
+
     useEffect(() => {
         const fetchBranches = async () => {
             setLoading(true)

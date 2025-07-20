@@ -12,6 +12,11 @@ export default function SetupMachinePage() {
     const [selectedCounter, setSelectedCounter] = useState('');
     const navigate = useNavigate();
 
+
+    useEffect(() => {
+        document.title = "Setup Mesin"
+    }, [])
+
     useEffect(() => {
         const storedBranch = localStorage.getItem('branch_id');
         const storedCounter = localStorage.getItem('counter_id');
