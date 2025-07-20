@@ -12,7 +12,6 @@ export default function SetupMachinePage() {
     const [selectedCounter, setSelectedCounter] = useState('');
     const navigate = useNavigate();
 
-    // Ambil data konfigurasi yang tersimpan di localStorage (satu kali saat mount)
     useEffect(() => {
         const storedBranch = localStorage.getItem('branch_id');
         const storedCounter = localStorage.getItem('counter_id');
@@ -20,7 +19,6 @@ export default function SetupMachinePage() {
         if (storedCounter) setSelectedCounter(storedCounter);
     }, []);
 
-    // Ambil daftar cabang
     useEffect(() => {
         const fetchBranches = async () => {
             try {
@@ -33,7 +31,6 @@ export default function SetupMachinePage() {
         fetchBranches();
     }, []);
 
-    // Ambil daftar counter berdasarkan cabang terpilih
     useEffect(() => {
         const fetchCounters = async () => {
             if (selectedBranch) {
@@ -53,6 +50,10 @@ export default function SetupMachinePage() {
     const saveMachineConfig = () => {
         localStorage.setItem('branch_id', selectedBranch);
         localStorage.setItem('counter_id', selectedCounter);
+        localStorage.setItem('branch_info', JSON.stringify({
+            name: branches.find(branch => branch._id === selectedBranch)?.name || '',
+            location: branches.find(branch => branch._id === selectedBranch)?.location || '',
+        }));
         notificationSucces("Konfigurasi mesin berhasil disimpan!");
         navigate('/');
     };
