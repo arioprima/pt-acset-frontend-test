@@ -3,6 +3,8 @@ import SetupMachinePage from './pages/SetupMachinePage/SetupMachinePage';
 import CustomerPage from './pages/CustomerPage/CustomerPage';
 import AdminPage from './pages/AdminPage/AdminPage';
 import { useEffect, useState } from 'react';
+import ProtectedRoute from './components/ProtectedRoute';
+import LoginPage from './pages/Auth/LoginPage';
 
 function AppRoutes() {
   const navigate = useNavigate();
@@ -11,8 +13,6 @@ function AppRoutes() {
   useEffect(() => {
     const branchId = localStorage.getItem('branch_id');
     const counterId = localStorage.getItem('counter_id');
-
-    // Jika belum ada konfigurasi, redirect ke /setup
     if (!branchId || !counterId) {
       navigate('/setup');
     }
@@ -26,7 +26,15 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<CustomerPage />} />
       <Route path="/setup" element={<SetupMachinePage />} />
-      <Route path="/admin" element={<AdminPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <AdminPage />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
